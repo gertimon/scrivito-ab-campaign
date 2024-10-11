@@ -23,7 +23,6 @@ Scrivito.provideComponent("ABCampaignWidget", Scrivito.connect(({ widget }) => {
 
   const campaignTitle = campaign.get("title");
   let selectedGroup = selectedCampaigns[campaignTitle];
-  console.log(selectedCampaigns, campaignTitle, selectedGroup);
 
   if (!selectedGroup) {
     selectedGroup = chooseRandomeCampaignFor(campaignTitle, tests);

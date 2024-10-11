@@ -2,18 +2,18 @@ import * as Scrivito from "scrivito";
 
 Scrivito.provideEditingConfig("ABCampaign", {
   attributes: {
-    tags: {
-      title: "Tags",
+    validFrom: {
+      title: "Valid From",
+      description: "A date a campaign is valid. If empty, it is valid everytime.",
     },
-    title: {
-      title: "Titel",
+    validUntil: {
+      title: "Valid From",
+      description: "A date a campaign is valid. If empty, it is valid everytime.",
     },
-    description: {
-      title: "Description",
-    },
-    tests: {
-      title: "Tests",
+    trackingInformation: {
+      title: "Tracking Information",
+      description: "Enter additional information needed for your Tracking service.",
     },
   },
-  properties: ["title", "description", "tags", "tests"],
+  properties: ["title", "description", "tags", "validFrom", "validUntil", "trackingInformation", "tests"],
 });

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useRef } from 'react';
+import * as Scrivito from "./scrivito";
 
 const CampaignContext = createContext();
 
@@ -16,7 +17,7 @@ export const useCampaign = () => {
   return context;
 };
 
-export const CampaignProvider = ({ children, chooseTestGroup }) => {
+export const CampaignProvider = ({ children, chooseTestGroup, trackInteraction }) => {
   const selectedCampaigns = useRef(JSON.parse(window.localStorage.getItem("abcampaign")) || {});
 
   const chooseRandomeCampaignFor = (campaignTitle, tests) => {
@@ -26,8 +27,17 @@ export const CampaignProvider = ({ children, chooseTestGroup }) => {
     return test;
   };
 
+  const trackInteractionFor = async (campaign) => {
+    if(!trackInteraction) return null;
+    const campaignTitle = campaign.get("Title");
+    const tests = await Scrivito.load(() => campaign.get(tests));
+    const group = selectedCampaigns[campaignTitle] || chooseRandomeCampaignFor(campaign, tests);
+    const selectedTest = tests.filter((t) => t.get("title") === group);
+    return trackInteraction(campaign, selectedTest);
+  }
+
   return (
-    <CampaignContext.Provider value={{ selectedCampaigns: selectedCampaigns.current, chooseRandomeCampaignFor }}>
+    <CampaignContext.Provider value={{ selectedCampaigns: selectedCampaigns.current, chooseRandomeCampaignFor, trackInteractionFor }}>
       {children}
     </CampaignContext.Provider>
   );
