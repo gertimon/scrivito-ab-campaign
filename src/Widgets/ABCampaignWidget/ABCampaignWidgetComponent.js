@@ -2,6 +2,7 @@ import * as React from "react";
 import * as Scrivito from "scrivito";
 import { useCampaign } from '../../Components/ABCampaignContext';
 import { isCampaignValid } from "../../utils/isCampaignValid";
+import { campaignTitle } from "../../utils/campaignTitle";
 
 import { AllTestsTabComponent } from "./AllTestsTabComponent";
 
@@ -29,11 +30,12 @@ Scrivito.provideComponent("ABCampaignWidget", Scrivito.connect(({ widget }) => {
       : null
   }
 
-  const campaignTitle = campaign.get("title");
-  let selectedGroup = selectedCampaigns[campaignTitle];
+  const cTitle = campaignTitle(campaign);
+  let selectedGroup = selectedCampaigns[cTitle];
 
+  // select a test group if none is selected
   if (!selectedGroup) {
-    selectedGroup = chooseRandomeCampaignFor(campaignTitle, tests);
+    selectedGroup = chooseRandomeCampaignFor(campaign);
   }
 
   const selectedTest = tests.filter(t => t.get("title") === selectedGroup );

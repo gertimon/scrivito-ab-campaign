@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useRef } from 'react';
-import * as Scrivito from "./scrivito";
+import * as Scrivito from "scrivito";
+
+import { campaignTitle } from "../utils/campaignTitle";
 
 const CampaignContext = createContext();
 
@@ -20,18 +22,21 @@ export const useCampaign = () => {
 export const CampaignProvider = ({ children, chooseTestGroup, trackInteraction }) => {
   const selectedCampaigns = useRef(JSON.parse(window.localStorage.getItem("abcampaign")) || {});
 
-  const chooseRandomeCampaignFor = (campaignTitle, tests) => {
-    const test = chooseTestGroup ? chooseTestGroup(campaignTitle, tests) : randomlyChooseGroup(tests);
-    selectedCampaigns.current[campaignTitle] = test;
+  const chooseRandomeCampaignFor = (campaign) => {
+    const cTitle = campaignTitle(campaign);
+    const tests = campaign?.get("tests");
+    if (!tests?.length) {return null;}
+    const test = chooseTestGroup ? chooseTestGroup(campaign) : randomlyChooseGroup(tests);
+    selectedCampaigns.current[cTitle] = test;
     window.localStorage.setItem("abcampaign", JSON.stringify(selectedCampaigns.current));
     return test;
   };
 
   const trackInteractionFor = async (campaign) => {
     if(!trackInteraction) return null;
-    const campaignTitle = campaign.get("Title");
+    const cTitle = campaignTitle(campaign);
     const tests = await Scrivito.load(() => campaign.get(tests));
-    const group = selectedCampaigns[campaignTitle] || chooseRandomeCampaignFor(campaign, tests);
+    const group = selectedCampaigns[cTitle] || chooseRandomeCampaignFor(campaign, tests);
     const selectedTest = tests.filter((t) => t.get("title") === group);
     return trackInteraction(campaign, selectedTest);
   }
