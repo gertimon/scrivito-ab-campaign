@@ -41,6 +41,13 @@ export const CampaignProvider = ({ children, chooseTestGroup, trackInteraction }
     return trackInteraction(campaign, selectedTest);
   }
 
+  const actualCampaign = (widget) => {
+    if (!widget) return null;
+    const parent = widget.container();
+    if (parent.objClass() === "ABCampaignWidget") return parent;
+    actualCampaign(parent);
+  }
+
   return (
     <CampaignContext.Provider value={{ selectedCampaigns: selectedCampaigns.current, chooseRandomeCampaignFor, trackInteractionFor }}>
       {children}
